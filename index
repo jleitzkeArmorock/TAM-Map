@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TAM Map - Wastewater Sites</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map { height: 100vh; }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map').setView([39, -98], 4); // Center of the US
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 18,
+    }).addTo(map);
+
+    fetch('data/203877518.json') // Replace this with your hosted path
+      .then(response => response.json())
+      .then(data => {
+        L.geoJSON(data, {
+          onEachFeature: function (feature, layer) {
+            const p = feature.properties;
+            const popupContent = `
+              <strong>${p.CWPName}</strong><br/>
+              ${p.CWPStreet || ''}<br/>
+              ${p.CWPCity || ''}, ${p.CWPState || ''}<br/>
+              Permit: ${p.SourceID || 'N/A'}<br/>
+              Avg Flow: ${p.CWPActualAverageFlowNmbr || 'N/A'} MGD
+            `;
+            layer.bindPopup(popupContent);
+          }
+        }).addTo(map);
+      });
+  </script>
+</body>
+</html>
