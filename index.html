@@ -20,7 +20,7 @@
       maxZoom: 18,
     }).addTo(map);
 
-    fetch('data/203877518.json') // Replace this with your hosted path
+    fetch('203877518.json') // Replace this with your hosted path
       .then(response => response.json())
       .then(data => {
         L.geoJSON(data, {
